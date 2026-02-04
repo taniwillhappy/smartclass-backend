@@ -6,10 +6,11 @@ const {
   dashboard
 } = require('../controllers/authController');
 
-const authMiddleware = require('../middleware/authMiddleware');
+const auth = require("../middleware/authMiddleware");
+
+router.get("/dashboard", auth, authController.dashboard);
 
 router.post('/register', register);
 router.post('/login', login);
-router.get('/dashboard', authMiddleware, dashboard);
 
 module.exports = router;
