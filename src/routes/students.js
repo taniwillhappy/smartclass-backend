@@ -1,12 +1,11 @@
 const express = require('express')
 const router = express.Router()
+const studentController = require('../controllers/studentController')
 const auth = require('../middleware/authMiddleware')
-const controller = require('../controllers/studentController')
 
-
-router.get('/', auth, controller.getStudents)
-router.post('/', auth, controller.addStudent)
-router.put('/:id', auth, controller.updateStudent)
-router.delete('/:id', auth, controller.deleteStudent)
+router.get('/', auth, studentController.getStudents)
+router.post('/', auth, studentController.addStudent)
+router.put('/:id', auth, studentController.updateStudent)
+router.delete('/:id', auth, studentController.deleteStudent)
 
 module.exports = router
