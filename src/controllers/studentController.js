@@ -1,0 +1,46 @@
+const pool = require('../db')
+
+// get
+exports.getStudents = async (req, res) => {
+  const teacher_id = req.user.id
+
+  const result = await pool.query(
+    `SELECT * FROM students WHERE teacher_id = $1 ORDER BY number ASC`, [teacher_id] )
+
+  res.json(result.rows)
+}
+
+// add
+exports.addStudent = async (req, res) => {
+  const { number, prefix, name, level, department } = req.body
+  const teacher_id = req.user.id
+
+  const result = await pool.query(
+    `INSERT INTO students (number, prefix, name, level, department, teacher_id)
+    VALUES ($1,$2,$3,$4,$5,$6)
+    RETURNING *`,[number, prefix, name, level, department, teacher_id])
+
+  res.json(result.rows[0])
+}
+
+// update
+exports.updateStudent = async (req, res) => {
+  const { number, prefix, name, level, department } = req.body
+  const { id } = req.params
+  const teacher_id = req.user.id
+
+  await pool.query(`UPDATE students SET number=$1, prefix=$2, name=$3, level=$4, department=$5 WHERE id=$6 AND teacher_id=$7`,
+    [number, prefix, name, level, department, id, teacher_id])
+
+  res.json({ message: 'updated' })
+}
+
+// delete
+exports.deleteStudent = async (req, res) => {
+  const { id } = req.params
+  const teacher_id = req.user.id
+
+  await pool.query('DELETE FROM students WHERE id=$1 AND teacher_id=$2',[id, teacher_id])
+
+  res.json({ message: 'deleted' })
+}
