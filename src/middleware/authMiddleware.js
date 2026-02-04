@@ -21,7 +21,11 @@ module.exports = (req, res, next) => {
     }
 
     // 🔥 จุดสำคัญ
-    req.user = decoded;
+    req.user = {
+    id: decoded.id,
+    fullname: decoded.fullname
+  }
+
     next();
   });
 };
