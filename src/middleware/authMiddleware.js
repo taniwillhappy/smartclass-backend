@@ -1,18 +1,27 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 module.exports = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader)
-    return res.status(401).json({ message: 'No token' });
+  // ไม่มี header
+  if (!authHeader) {
+    return res.status(401).json({ message: "No token provided" });
+  }
 
-  const token = authHeader.split(' ')[1];
+  // รูปแบบต้องเป็น: Bearer xxx
+  const token = authHeader.split(" ")[1];
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  if (!token) {
+    return res.status(401).json({ message: "Invalid token format" });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Token invalid or expired" });
+    }
+
+    // 🔥 จุดสำคัญ
     req.user = decoded;
     next();
-  } catch {
-    res.status(401).json({ message: 'Invalid token' });
-  }
+  });
 };
