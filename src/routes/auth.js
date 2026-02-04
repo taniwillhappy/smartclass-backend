@@ -8,7 +8,7 @@ const {
 
 const auth = require("../middleware/authMiddleware");
 
-router.get("/dashboard", authController.dashboard);
+router.get("/dashboard", auth.dashboard);
 
 router.post('/register', register);
 router.post('/login', login);
